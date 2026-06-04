@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HealthHero - Your AI Health Coach</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <!-- Login/Register Modal -->
+    <div id="auth-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Welcome to HealthHero</h2>
+          <p>Your AI-powered health and wellness coach</p>
+        </div>
+        <div class="auth-tabs">
+          <button class="tab-btn active" data-tab="login">Login</button>
+          <button class="tab-btn" data-tab="register">Register</button>
+        </div>
+        <form id="login-form" class="auth-form">
+          <input type="text" id="login-username" placeholder="Username" required />
+          <input type="password" id="login-password" placeholder="Password" required />
+          <button type="submit" class="btn-primary">Login</button>
+          <div id="auth-error" class="error-message"></div>
+        </form>
+        <form id="register-form" class="auth-form" style="display: none;">
+          <input type="text" id="register-username" placeholder="Username" required />
+          <input type="email" id="register-email" placeholder="Email" required />
+          <input type="password" id="register-password" placeholder="Password" required />
+          <button type="submit" class="btn-primary">Register</button>
+          <div id="register-error" class="error-message"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="main-app" style="display: none;">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <span class="logo-icon">⚕️</span>
+            <h1>HealthHero</h1>
+          </div>
+          <button id="help-btn" class="btn-icon" title="Help">❓</button>
+        </div>
+        
+        <!-- User Profile Button -->
+        <div id="user-profile-btn" class="user-profile-btn">
+          <div class="user-avatar" id="user-avatar">U</div>
+          <div class="user-info">
+            <div class="user-name" id="user-name">User</div>
+            <div class="user-email" id="user-email">user@example.com</div>
+          </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+          <button class="nav-item active" data-view="chat">
+            <span class="nav-icon">💬</span>
+            <span>Chat</span>
+          </button>
+          <button class="nav-item" data-view="tracking">
+            <span class="nav-icon">📊</span>
+            <span>Tracking</span>
+          </button>
+          <button class="nav-item" data-view="reminders">
+            <span class="nav-icon">⏰</span>
+            <span>Reminders</span>
+          </button>
+          <button class="nav-item" data-view="goals">
+            <span class="nav-icon">🎯</span>
+            <span>Goals</span>
+          </button>
+          <button class="nav-item" data-view="analytics">
+            <span class="nav-icon">📈</span>
+            <span>Analytics</span>
+          </button>
+          <button class="nav-item" data-view="reports">
+            <span class="nav-icon">📄</span>
+            <span>Reports</span>
+          </button>
+          <button class="nav-item" data-view="settings">
+            <span class="nav-icon">⚙️</span>
+            <span>Settings</span>
+          </button>
+        </nav>
+        
+        <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border-color);">
+          <button id="logout-btn" class="nav-item" style="color: var(--accent-red);">
+            <span class="nav-icon">🚪</span>
+            <span>Logout</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Chat View -->
+        <div id="chat-view" class="view active">
+          <div class="view-header">
+            <div>
+              <h2>Chat with HealthHero</h2>
+              <p>Ask me about your health, wellness, and goals</p>
+            </div>
+          </div>
+          
+          <!-- Quick Actions -->
+          <div class="quick-actions">
+            <button class="quick-action-btn" data-quick="water">
+              <span class="icon">💧</span>
+              <span>Log Water</span>
+            </button>
+            <button class="quick-action-btn" data-quick="steps">
+              <span class="icon">🚶</span>
+              <span>Log Steps</span>
+            </button>
+            <button class="quick-action-btn" data-quick="sleep">
+              <span class="icon">😴</span>
+              <span>Log Sleep</span>
+            </button>
+            <button class="quick-action-btn" data-quick="exercise">
+              <span class="icon">🏃</span>
+              <span>Log Exercise</span>
+            </button>
+          </div>
+          
+          <div id="chat" class="chat-container"></div>
+          <form id="chat-form" class="chat-form">
+            <input id="user-input" type="text" placeholder="Ask about water, steps, sleep, exercise..." autocomplete="off" />
+            <button type="submit" class="btn-send">Send</button>
+          </form>
+        </div>
+
+        <!-- Tracking View -->
+        <div id="tracking-view" class="view">
+          <div class="view-header">
+            <div>
+              <h2>Health Tracking</h2>
+              <p>Log your daily health metrics</p>
+            </div>
+          </div>
+          <div class="tracking-content">
+            <form id="metric-form" class="metric-form">
+              <select id="metric-type" required>
+                <option value="">Select metric...</option>
+                <option value="water">💧 Water (liters)</option>
+                <option value="steps">🚶 Steps</option>
+                <option value="sleep">😴 Sleep (hours)</option>
+                <option value="exercise">🏃 Exercise (minutes)</option>
+                <option value="weight">⚖️ Weight</option>
+                <option value="heart_rate">❤️ Heart Rate (bpm)</option>
+              </select>
+              <input type="number" id="metric-value" step="0.1" placeholder="Value" required />
+              <input type="text" id="metric-notes" placeholder="Notes (optional)" />
+              <button type="submit" class="btn-primary">Add Metric</button>
+            </form>
+            <div id="metrics-list" class="metrics-list"></div>
+          </div>
+        </div>
+
+        <!-- Reminders View -->
+        <div id="reminders-view" class="view">
+          <div class="view-header">
+            <div>
+              <h2>Health Reminders</h2>
+              <p>Set reminders for your health activities</p>
+            </div>
+          </div>
+          <div class="reminders-content">
+            <form id="reminder-form" class="reminder-form">
+              <input type="text" id="reminder-title" placeholder="Title (e.g., Drink Water)" required />
+              <textarea id="reminder-description" placeholder="Description (optional)"></textarea>
+              <select id="reminder-type" required>
+                <option value="">Select type...</option>
+                <option value="water">💧 Water</option>
+                <option value="medication">💊 Medication</option>
+                <option value="exercise">🏃 Exercise</option>
+                <option value="meal">🍎 Meal</option>
+                <option value="sleep">😴 Sleep</option>
+                <option value="other">📝 Other</option>
+              </select>
+              <input type="time" id="reminder-time" required />
+              <button type="submit" class="btn-primary">Create Reminder</button>
+            </form>
+            <div id="reminders-list" class="reminders-list"></div>
+          </div>
+        </div>
+
+        <!-- Goals View -->
+        <div id="goals-view" class="view">
+          <div class="view-header">
+            <div>
+              <h2>Health Goals</h2>
+              <p>Set and track your health goals</p>
+            </div>
+            <button class="btn-primary" onclick="openGoalModal()">+ New Goal</button>
+          </div>
+          <div class="tracking-content">
+            <div id="goals-list" class="goals-list"></div>
+          </div>
+        </div>
+
+        <!-- Analytics View -->
+        <div id="analytics-view" class="view">
+          <div class="view-header">
+            <div>
+              <h2>Health Analytics</h2>
+              <p>Insights into your health journey</p>
+            </div>
+          </div>
+          <div id="analytics-content" class="analytics-content">
+            <div class="loading">Loading analytics...</div>
+          </div>
+        </div>
+
+        <!-- Reports View -->
+        <div id="reports-view" class="view">
+          <div class="view-header">
+            <div>
+              <h2>Health Reports</h2>
+              <p>Weekly and monthly health summaries</p>
+            </div>
+            <div class="view-actions">
+              <button class="btn-secondary" onclick="loadReport('week')">Week</button>
+              <button class="btn-secondary" onclick="loadReport('month')">Month</button>
+            </div>
+          </div>
+          <div id="reports-content" class="tracking-content">
+            <div class="loading">Select a period to generate report...</div>
+          </div>
+        </div>
+
+        <!-- Settings View -->
+        <div id="settings-view" class="view">
+          <div class="view-header">
+            <div>
+              <h2>Settings</h2>
+              <p>Customize your HealthHero experience</p>
+            </div>
+          </div>
+          <div class="tracking-content">
+            <div class="metric-form">
+              <div class="modal-section">
+                <h3>Unit Preferences</h3>
+                <div class="form-group">
+                  <label for="unit-system">Unit System</label>
+                  <select id="unit-system">
+                    <option value="metric">Metric (kg, cm, °C)</option>
+                    <option value="imperial">Imperial (lbs, ft, °F)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="timezone">Timezone</label>
+                  <select id="timezone"></select>
+                </div>
+                <div class="form-group">
+                  <label for="date-format">Date Format</label>
+                  <select id="date-format">
+                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                  </select>
+                </div>
+              </div>
+              <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="loadSettings()">Reset</button>
+                <button type="button" class="btn-primary" onclick="saveSettings()">Save Settings</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="profile-modal">
+      <div class="modal-content modal-large">
+        <div class="modal-header">
+          <h2>Profile Settings</h2>
+          <p>Manage your personal information</p>
+        </div>
+        <form id="profile-form">
+          <div class="modal-section">
+            <h3>Profile Picture</h3>
+            <div class="avatar-upload">
+              <div class="avatar-preview" id="avatar-preview">U</div>
+              <div>
+                <input type="file" id="avatar-input" accept="image/*" style="display: none;" />
+                <button type="button" class="btn-secondary" onclick="document.getElementById('avatar-input').click()">Change Avatar</button>
+                <p style="color: var(--text-muted); font-size: 12px; margin-top: 8px;">JPG, PNG up to 2MB</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-section">
+            <h3>Personal Information</h3>
+            <div class="form-group">
+              <label for="profile-username">Username</label>
+              <input type="text" id="profile-username" required />
+            </div>
+            <div class="form-group">
+              <label for="profile-email">Email</label>
+              <input type="email" id="profile-email" required />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="profile-age">Age</label>
+                <input type="number" id="profile-age" min="1" max="120" />
+              </div>
+              <div class="form-group">
+                <label for="profile-gender">Gender</label>
+                <select id="profile-gender">
+                  <option value="">Prefer not to say</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="profile-height">Height</label>
+                <input type="number" id="profile-height" step="0.1" placeholder="cm" />
+              </div>
+              <div class="form-group">
+                <label for="profile-weight">Weight</label>
+                <input type="number" id="profile-weight" step="0.1" placeholder="kg" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-section">
+            <h3>Health Information</h3>
+            <div class="form-group">
+              <label for="profile-conditions">Medical Conditions (comma-separated)</label>
+              <input type="text" id="profile-conditions" placeholder="e.g., Diabetes, Hypertension" />
+            </div>
+            <div class="form-group">
+              <label for="profile-medications">Current Medications (comma-separated)</label>
+              <input type="text" id="profile-medications" placeholder="e.g., Aspirin, Metformin" />
+            </div>
+            <div class="form-group">
+              <label for="profile-allergies">Allergies (comma-separated)</label>
+              <input type="text" id="profile-allergies" placeholder="e.g., Peanuts, Penicillin" />
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" onclick="closeProfileModal()">Cancel</button>
+            <button type="submit" class="btn-primary">Save Profile</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Goal Modal -->
+    <div id="goal-modal" class="profile-modal">
+      <div class="modal-content modal-large">
+        <div class="modal-header">
+          <h2 id="goal-modal-title">New Goal</h2>
+          <p>Set a health goal and track your progress</p>
+        </div>
+        <form id="goal-form">
+          <div class="modal-section">
+            <h3>Goal Details</h3>
+            <div class="form-group">
+              <label for="goal-type">Goal Type</label>
+              <select id="goal-type" required>
+                <option value="">Select type...</option>
+                <option value="water">💧 Water Intake</option>
+                <option value="steps">🚶 Daily Steps</option>
+                <option value="sleep">😴 Sleep Hours</option>
+                <option value="exercise">🏃 Exercise Minutes</option>
+                <option value="weight">⚖️ Weight Loss/Gain</option>
+                <option value="heart_rate">❤️ Heart Rate</option>
+                <option value="other">📝 Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="goal-title">Title</label>
+              <input type="text" id="goal-title" placeholder="e.g., Drink 2L water daily" required />
+            </div>
+            <div class="form-group">
+              <label for="goal-description">Description (optional)</label>
+              <textarea id="goal-description" placeholder="Add more details about your goal..."></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="goal-target">Target Value</label>
+                <input type="number" id="goal-target" step="0.1" placeholder="e.g., 2" required />
+              </div>
+              <div class="form-group">
+                <label for="goal-unit">Unit</label>
+                <input type="text" id="goal-unit" placeholder="e.g., liters, steps, hours" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="goal-start-date">Start Date</label>
+                <input type="date" id="goal-start-date" required />
+              </div>
+              <div class="form-group">
+                <label for="goal-end-date">End Date (optional)</label>
+                <input type="date" id="goal-end-date" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" onclick="closeGoalModal()">Cancel</button>
+            <button type="submit" class="btn-primary">Save Goal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="help-modal">
+      <div class="modal-content modal-large">
+        <div class="modal-header">
+          <h2>Help & Support</h2>
+          <p>Get help with using HealthHero</p>
+        </div>
+        <div class="help-content">
+          <div class="modal-section">
+            <h3>Getting Started</h3>
+            <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px;">
+              Welcome to HealthHero! Start by chatting with our AI health coach, tracking your daily metrics, 
+              setting reminders, and viewing your health analytics. Use the quick action buttons for fast logging.
+            </p>
+          </div>
+          <div class="modal-section">
+            <h3>Frequently Asked Questions</h3>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">
+                <h4>How do I track my health metrics?</h4>
+                <span>▼</span>
+              </div>
+              <div class="faq-answer">
+                <p>Go to the Tracking section and select a metric type, enter the value, and add optional notes. 
+                You can also use quick action buttons in the Chat view for faster logging.</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">
+                <h4>How do reminders work?</h4>
+                <span>▼</span>
+              </div>
+              <div class="faq-answer">
+                <p>Create reminders in the Reminders section. Set a title, type, and scheduled time. 
+                Reminders help you stay on track with your health goals.</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">
+                <h4>Can I change my units?</h4>
+                <span>▼</span>
+              </div>
+              <div class="faq-answer">
+                <p>Yes! Go to Settings and change your unit system (Metric/Imperial), timezone, and date format preferences.</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">
+                <h4>How do I update my profile?</h4>
+                <span>▼</span>
+              </div>
+              <div class="faq-answer">
+                <p>Click on your profile picture/name in the sidebar to open the Profile Settings modal. 
+                You can update your personal information, health details, and upload a profile picture.</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">
+                <h4>Is my data secure?</h4>
+                <span>▼</span>
+              </div>
+              <div class="faq-answer">
+                <p>Yes! All your data is encrypted and stored securely. We use JWT authentication and follow 
+                best practices for data protection. Your health information is private and confidential.</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-section">
+            <h3>Keyboard Shortcuts</h3>
+            <div style="color: var(--text-secondary); line-height: 1.8;">
+              <p><strong>Enter:</strong> Send chat message</p>
+              <p><strong>Esc:</strong> Close modals</p>
+              <p><strong>/:</strong> Focus chat input</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-primary" onclick="closeHelpModal()">Got it!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

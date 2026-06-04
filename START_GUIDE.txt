@@ -1,0 +1,339 @@
+================================================================================
+                    HEALTHHERO - START GUIDE
+                    Step-by-Step Setup Instructions
+================================================================================
+
+This guide will walk you through setting up and running the HealthHero 
+application from scratch.
+
+================================================================================
+STEP 1: PREREQUISITES
+================================================================================
+
+1.1. Check Python Installation
+   - Open Command Prompt or PowerShell
+   - Type: python --version
+   - You should see Python 3.8 or higher
+   - If not installed, download from: https://www.python.org/downloads/
+   - During installation, CHECK "Add Python to PATH"
+
+1.2. Verify pip is installed
+   - Type: pip --version
+   - If not found, install pip separately
+
+================================================================================
+STEP 2: NAVIGATE TO PROJECT DIRECTORY
+================================================================================
+
+2.1. Open Command Prompt or PowerShell
+
+2.2. Navigate to the HealthHero folder:
+   
+   For Windows:
+   cd A:\HealthHero
+   
+   Or if your project is in a different location:
+   cd "C:\path\to\HealthHero"
+
+2.3. Verify you're in the correct directory:
+   - Type: dir (Windows) or ls (PowerShell)
+   - You should see files like: app.py, database.py, requirements.txt
+
+================================================================================
+STEP 3: INSTALL DEPENDENCIES
+================================================================================
+
+3.1. Create a virtual environment (RECOMMENDED):
+   
+   Windows Command Prompt:
+   python -m venv venv
+   
+   Windows PowerShell:
+   python -m venv venv
+
+3.2. Activate the virtual environment:
+   
+   Windows Command Prompt:
+   venv\Scripts\activate
+   
+   Windows PowerShell:
+   venv\Scripts\Activate.ps1
+   
+   (If you get an execution policy error in PowerShell, run:
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser)
+
+3.3. Install required packages:
+   pip install -r requirements.txt
+   
+   This will install:
+   - fastapi
+   - uvicorn
+   - jinja2
+   - pydantic
+   - httpx
+   - aiosqlite
+   - python-jose
+   - python-multipart
+   - email-validator
+
+3.4. Wait for installation to complete
+   - You should see "Successfully installed..." messages
+   - If you see errors, make sure you have internet connection
+
+================================================================================
+STEP 4: API KEY SETUP (OPTIONAL BUT RECOMMENDED)
+================================================================================
+
+4.1. Get an OpenAI API Key (if you want AI features):
+   - Go to: https://platform.openai.com/api-keys
+   - Sign up or log in
+   - Create a new API key
+   - Copy the key (starts with "sk-")
+
+4.2. Set the API Key (Choose ONE method):
+
+   Method A - Environment Variable (RECOMMENDED):
+   
+   Windows Command Prompt:
+   setx OPENAI_API_KEY "your-api-key-here"
+   
+   Windows PowerShell:
+   $env:OPENAI_API_KEY="your-api-key-here"
+   
+   (Replace "your-api-key-here" with your actual key)
+   
+   Note: For setx, you need to close and reopen the terminal for it to take effect.
+
+   Method B - API Key File:
+   - Open the file: "HealthHero API Key.txt"
+   - Paste your API key in the file
+   - Save the file
+   
+   The app will automatically read from this file if the environment variable 
+   is not set.
+
+4.3. Optional: Set other environment variables:
+   
+   Windows Command Prompt:
+   setx OPENAI_BASE_URL "https://api.openai.com/v1"
+   setx OPENAI_MODEL "gpt-4o-mini"
+   
+   Windows PowerShell:
+   $env:OPENAI_BASE_URL="https://api.openai.com/v1"
+   $env:OPENAI_MODEL="gpt-4o-mini"
+
+   Note: If you don't set an API key, the app will use mock responses for 
+   demonstration purposes.
+
+================================================================================
+STEP 5: START THE SERVER
+================================================================================
+
+5.1. Make sure you're in the HealthHero directory:
+   cd A:\HealthHero
+   (or your project path)
+
+5.2. Make sure virtual environment is activated (if using one):
+   - You should see "(venv)" at the beginning of your command prompt
+
+5.3. Start the server:
+   
+   python -m uvicorn app:app --reload --host 127.0.0.1 --port 8000
+   
+   OR simply:
+   
+   python -m uvicorn app:app --reload
+
+5.4. You should see output like:
+   
+   INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+   INFO:     Started reloader process
+   INFO:     Started server process
+   INFO:     Waiting for application startup.
+   INFO:     Application startup complete.
+   ✓ OpenAI API key loaded successfully (using gpt-4o-mini)
+   INFO:     Uvicorn running on http://127.0.0.1:8000
+
+5.5. If you see errors:
+   - Check that all dependencies are installed
+   - Make sure port 8000 is not already in use
+   - Check that Python version is 3.8 or higher
+
+================================================================================
+STEP 6: ACCESS THE APPLICATION
+================================================================================
+
+6.1. Open your web browser (Chrome, Firefox, Edge, etc.)
+
+6.2. Navigate to one of these URLs:
+   
+   http://localhost:8000
+   
+   OR
+   
+   http://127.0.0.1:8000
+
+6.3. You should see the HealthHero login/registration page
+
+6.4. If the page doesn't load:
+   - Check that the server is still running in the terminal
+   - Try refreshing the page (F5)
+   - Check your firewall settings
+   - Try a different browser
+
+================================================================================
+STEP 7: FIRST TIME SETUP
+================================================================================
+
+7.1. Create an Account:
+   - Click on "Register" tab
+   - Enter a username
+   - Enter your email address
+   - Enter a password
+   - Click "Register"
+
+7.2. You'll be automatically logged in after registration
+
+7.3. Start Using HealthHero:
+   - Chat with the AI health coach
+   - Track your health metrics
+   - Set reminders
+   - Create goals
+   - View analytics and reports
+
+================================================================================
+STEP 8: STOPPING THE SERVER
+================================================================================
+
+8.1. To stop the server:
+   - Go back to the terminal/command prompt where the server is running
+   - Press: CTRL + C
+   - The server will stop gracefully
+
+8.2. To start again:
+   - Simply run the command from Step 5.3 again
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+PROBLEM: "python is not recognized"
+SOLUTION: 
+   - Python is not in your PATH
+   - Reinstall Python and check "Add Python to PATH"
+   - Or use full path: C:\Python3X\python.exe
+
+PROBLEM: "pip is not recognized"
+SOLUTION:
+   - Install pip: python -m ensurepip --upgrade
+   - Or use: python -m pip instead of just pip
+
+PROBLEM: "ModuleNotFoundError" when starting server
+SOLUTION:
+   - Make sure you installed requirements: pip install -r requirements.txt
+   - Make sure virtual environment is activated (if using one)
+   - Try: pip install --upgrade -r requirements.txt
+
+PROBLEM: "Port 8000 is already in use"
+SOLUTION:
+   - Use a different port: python -m uvicorn app:app --reload --port 8001
+   - Or find and close the process using port 8000:
+     Windows: netstat -ano | findstr :8000
+     Then: taskkill /PID <process_id> /F
+
+PROBLEM: "Database error" or "table doesn't exist"
+SOLUTION:
+   - Delete the file: healthhero.db (if it exists)
+   - Restart the server - it will create a fresh database
+
+PROBLEM: "Connection refused" in browser
+SOLUTION:
+   - Make sure server is running (check terminal)
+   - Try http://127.0.0.1:8000 instead of localhost
+   - Check Windows Firewall settings
+   - Make sure you're using the correct port number
+
+PROBLEM: API key not working
+SOLUTION:
+   - Verify the key is correct (starts with "sk-")
+   - Check if you have credits in your OpenAI account
+   - The app will use mock responses if API key is invalid
+   - Try setting it again using Step 4.2
+
+PROBLEM: Changes not reflecting
+SOLUTION:
+   - The --reload flag should auto-reload on changes
+   - If not, stop server (CTRL+C) and restart
+   - Clear browser cache (CTRL+SHIFT+DELETE)
+
+================================================================================
+QUICK START (FOR EXPERIENCED USERS)
+================================================================================
+
+1. cd A:\HealthHero
+2. python -m venv venv
+3. venv\Scripts\activate
+4. pip install -r requirements.txt
+5. python -m uvicorn app:app --reload
+6. Open http://localhost:8000 in browser
+
+================================================================================
+FEATURES OVERVIEW
+================================================================================
+
+✓ User Authentication (Register/Login)
+✓ AI-Powered Health Chat (OpenAI integration)
+✓ Health Metrics Tracking (Water, Steps, Sleep, Exercise, Weight, Heart Rate)
+✓ Reminders System
+✓ Goal Setting & Progress Tracking
+✓ Analytics Dashboard with Charts
+✓ Health Reports (Weekly/Monthly)
+✓ Profile Management
+✓ Settings & Preferences
+
+================================================================================
+FILE STRUCTURE
+================================================================================
+
+HealthHero/
+├── app.py                 # Main FastAPI application
+├── auth.py                # Authentication & JWT handling
+├── database.py            # Database functions
+├── llm.py                 # AI/LLM integration
+├── requirements.txt       # Python dependencies
+├── healthhero.db          # SQLite database (created automatically)
+├── jwt_secret.txt         # JWT secret key (created automatically)
+├── HealthHero API Key.txt # Optional: Your OpenAI API key
+├── static/
+│   ├── app.js            # Frontend JavaScript
+│   └── styles.css        # Styling
+└── templates/
+    └── index.html        # Main HTML template
+
+================================================================================
+DEVELOPMENT MODE
+================================================================================
+
+The server runs with --reload flag, which means:
+- Code changes automatically restart the server
+- Great for development
+- No need to manually restart after editing files
+
+For production, remove --reload:
+python -m uvicorn app:app --host 0.0.0.0 --port 8000
+
+================================================================================
+SUPPORT & HELP
+================================================================================
+
+- Check the Help section in the app (click ? icon in sidebar)
+- Review the README.md file
+- Check console/terminal for error messages
+- Verify all files are in the correct locations
+
+================================================================================
+END OF GUIDE
+================================================================================
+
+Happy health tracking with HealthHero! 🏥💚
+

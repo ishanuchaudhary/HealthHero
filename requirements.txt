@@ -1,0 +1,24 @@
+# HealthHero — Requirements
+# No API key needed. Fully local ML model.
+# Install with:  pip install -r requirements.txt
+
+# ── Web Framework ─────────────────────────────
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+
+# ── Database ──────────────────────────────────
+aiosqlite==0.20.0
+
+# ── Authentication ────────────────────────────
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.12
+
+# ── Local ML Model (replaces OpenAI) ──────────
+scikit-learn==1.5.2
+pandas==2.2.3
+numpy==1.26.4
+joblib==1.4.2
+
+# ── HTTP (still used for WebSocket internals) ─
+httpx==0.27.2
