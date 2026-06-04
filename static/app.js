@@ -165,7 +165,8 @@ function showError(elementId, message) {
 function showToast(message, type = "info") {
   const toast = document.createElement("div");
   toast.className = `toast toast-${type}`;
-  toast.innerHTML = `<span>${message}</span>`;
+  const icons = { success: '✓', error: '✕', warning: '⚠', info: 'ℹ' };
+  toast.innerHTML = `<span class="toast-icon">${icons[type] || 'ℹ'}</span><span>${message}</span>`;
   document.getElementById("toast-container").appendChild(toast);
   
   setTimeout(() => {
@@ -283,7 +284,7 @@ function addLoader() {
   }
   const div = document.createElement("div");
   div.className = "msg bot forming";
-  div.innerHTML = `<div class="loading"><span></span><span></span><span></span></div>`;
+  div.innerHTML = `<div class="loading"><div class="loading-dots"><span></span><span></span><span></span></div></div>`;
   chatEl.appendChild(div);
   chatEl.scrollTop = chatEl.scrollHeight;
   return div;
@@ -465,7 +466,7 @@ function loadView(viewName) {
 async function loadMetrics() {
   const list = document.getElementById("metrics-list");
   if (!list) return;
-  list.innerHTML = "<div class='loading'>Loading metrics...</div>";
+  list.innerHTML = `<div class='loading'><div class='loading-dots'><span></span><span></span><span></span></div>Loading metrics…</div>`;
   
   try {
     const res = await fetch("/api/health/metrics?days=7", {
@@ -491,7 +492,7 @@ function displayMetrics(metrics) {
   if (!list) return;
   
   if (metrics.length === 0) {
-    list.innerHTML = "<p class='empty-state'>No metrics recorded yet. Start tracking your health!</p>";
+    list.innerHTML = `<div class='empty-state'><div class='empty-state-icon'>📊</div><strong>No entries yet</strong>Start tracking your health above.</div>`;
     return;
   }
   
@@ -501,9 +502,9 @@ function displayMetrics(metrics) {
     return `
       <div class="metric-card">
         <div class="metric-header">
-          <span class="metric-type">${getMetricIcon(m.metric_type)} ${m.metric_type}</span>
-          <span class="metric-value">${formatMetricValue(m.value, m.metric_type, settings.unitSystem)}</span>
+          <span class="metric-badge">${getMetricIcon(m.metric_type)} ${m.metric_type.replace('_',' ')}</span>
         </div>
+        <div class="metric-value">${formatMetricValue(m.value, m.metric_type, settings.unitSystem)}</div>
         ${m.notes ? `<p class="metric-notes">${m.notes}</p>` : ''}
         <span class="metric-date">${date}</span>
       </div>
@@ -575,7 +576,7 @@ async function addMetric() {
 async function loadReminders() {
   const list = document.getElementById("reminders-list");
   if (!list) return;
-  list.innerHTML = "<div class='loading'>Loading reminders...</div>";
+  list.innerHTML = `<div class='loading'><div class='loading-dots'><span></span><span></span><span></span></div>Loading reminders…</div>`;
   
   try {
     const res = await fetch("/api/reminders", {
@@ -601,20 +602,20 @@ function displayReminders(reminders) {
   if (!list) return;
   
   if (reminders.length === 0) {
-    list.innerHTML = "<p class='empty-state'>No reminders set. Create one to stay on track!</p>";
+    list.innerHTML = `<div class='empty-state'><div class='empty-state-icon'>⏰</div><strong>No reminders yet</strong>Create one above to stay on track.</div>`;
     return;
   }
   
   list.innerHTML = reminders.map(r => `
     <div class="reminder-card">
-      <div class="reminder-header">
-        <span class="reminder-icon">${getReminderIcon(r.reminder_type)}</span>
-        <div>
+      <div class="reminder-icon-wrap">${getReminderIcon(r.reminder_type)}</div>
+      <div class="reminder-body">
+        <div class="reminder-header">
           <h3>${r.title}</h3>
-          <p class="reminder-time">${r.scheduled_time}</p>
+          <span class="reminder-time-badge">🕐 ${r.scheduled_time}</span>
         </div>
+        ${r.description ? `<p class="reminder-desc">${r.description}</p>` : ''}
       </div>
-      ${r.description ? `<p class="reminder-desc">${r.description}</p>` : ''}
     </div>
   `).join("");
 }
@@ -666,7 +667,7 @@ async function addReminder() {
 async function loadAnalytics() {
   const content = document.getElementById("analytics-content");
   if (!content) return;
-  content.innerHTML = "<div class='loading'>Loading analytics...</div>";
+  content.innerHTML = `<div class='loading'><div class='loading-dots'><span></span><span></span><span></span></div>Loading analytics…</div>`;
   
   try {
     const res = await fetch("/api/analytics", {
@@ -917,7 +918,7 @@ let goalCharts = {};
 async function loadGoals() {
   const list = document.getElementById("goals-list");
   if (!list) return;
-  list.innerHTML = "<div class='loading'>Loading goals...</div>";
+  list.innerHTML = `<div class='loading'><div class='loading-dots'><span></span><span></span><span></span></div>Loading goals…</div>`;
   
   try {
     const res = await fetch("/api/goals?active_only=true", {
@@ -943,7 +944,7 @@ function displayGoals(goals) {
   if (!list) return;
   
   if (goals.length === 0) {
-    list.innerHTML = "<p class='empty-state'>No goals set yet. Create your first goal to get started!</p>";
+    list.innerHTML = `<div class='empty-state'><div class='empty-state-icon'>🎯</div><strong>No goals yet</strong>Create your first goal to start tracking progress.</div>`;
     return;
   }
   
@@ -953,25 +954,26 @@ function displayGoals(goals) {
     return `
       <div class="goal-card ${isCompleted ? 'completed' : ''}">
         <div class="goal-header">
-          <div>
+          <div class="goal-title-area">
             <h3>${goal.title}</h3>
-            <p class="goal-type">${getGoalTypeIcon(goal.goal_type)} ${goal.goal_type}</p>
+            <span class="goal-type-badge">${getGoalTypeIcon(goal.goal_type)} ${goal.goal_type.replace('_',' ')}</span>
           </div>
           <div class="goal-actions">
-            <button class="btn-icon" onclick="addGoalProgress(${goal.id})" title="Add Progress">➕</button>
-            <button class="btn-icon" onclick="deleteGoal(${goal.id})" title="Delete">🗑️</button>
+            <button class="btn-secondary" style="padding:6px 12px;font-size:12px;" onclick="addGoalProgress(${goal.id})" title="Add Progress">+ Progress</button>
+            <button class="btn-danger" onclick="deleteGoal(${goal.id})" title="Delete">✕</button>
           </div>
         </div>
         ${goal.description ? `<p class="goal-description">${goal.description}</p>` : ''}
         <div class="goal-progress">
+          <div class="progress-label">
+            <span>${(goal.current_value || 0).toFixed(1)} / ${goal.target_value} ${goal.unit || ''}</span>
+            <span class="progress-pct">${progress.toFixed(1)}%</span>
+          </div>
           <div class="progress-bar">
             <div class="progress-fill" style="width: ${Math.min(100, progress)}%"></div>
           </div>
-          <div class="progress-text">
-            <span>${(goal.current_value || 0).toFixed(1)} / ${goal.target_value} ${goal.unit || ''}</span>
-            <span class="progress-percent">${progress.toFixed(1)}%</span>
-          </div>
         </div>
+        ${isCompleted ? '<span class="goal-completed-badge">✓ Completed</span>' : ''}
         <div class="goal-dates">
           <span>Start: ${formatDate(goal.start_date, getUserSettings().dateFormat)}</span>
           ${goal.end_date ? `<span>End: ${formatDate(goal.end_date, getUserSettings().dateFormat)}</span>` : ''}
@@ -1104,10 +1106,13 @@ function createMetricChart(containerId, metricType, data) {
       datasets: [{
         label: metricType,
         data: values,
-        borderColor: '#0066cc',
-        backgroundColor: 'rgba(0, 102, 204, 0.1)',
+        borderColor: '#3d6b52',
+        backgroundColor: 'rgba(61,107,82, 0.08)',
         tension: 0.4,
-        fill: true
+        fill: true,
+        pointBackgroundColor: '#3d6b52',
+        pointRadius: 3,
+        pointHoverRadius: 5
       }]
     },
     options: {
@@ -1121,20 +1126,12 @@ function createMetricChart(containerId, metricType, data) {
       scales: {
         y: {
           beginAtZero: true,
-          ticks: {
-            color: '#a8c5d1'
-          },
-          grid: {
-            color: '#1a2d47'
-          }
+          ticks: { color: '#9aaa9d', font: { size: 11 } },
+          grid: { color: '#e4dfd7' }
         },
         x: {
-          ticks: {
-            color: '#a8c5d1'
-          },
-          grid: {
-            color: '#1a2d47'
-          }
+          ticks: { color: '#9aaa9d', font: { size: 11 }, maxRotation: 30 },
+          grid: { color: '#e4dfd7' }
         }
       }
     }
@@ -1145,7 +1142,7 @@ function createMetricChart(containerId, metricType, data) {
 async function loadAnalytics() {
   const content = document.getElementById("analytics-content");
   if (!content) return;
-  content.innerHTML = "<div class='loading'>Loading analytics...</div>";
+  content.innerHTML = `<div class='loading'><div class='loading-dots'><span></span><span></span><span></span></div>Loading analytics…</div>`;
   
   try {
     const res = await fetch("/api/analytics", {
@@ -1171,7 +1168,7 @@ async function displayAnalyticsWithCharts(data) {
   if (!content) return;
   
   if (!data.metrics || Object.keys(data.metrics).length === 0) {
-    content.innerHTML = "<p class='empty-state'>No analytics data yet. Start tracking your health metrics!</p>";
+    content.innerHTML = `<div class='empty-state'><div class='empty-state-icon'>📈</div><strong>No data yet</strong>Start logging health metrics to see your analytics.</div>`;
     return;
   }
   
@@ -1182,7 +1179,7 @@ async function displayAnalyticsWithCharts(data) {
     html += `
       <div class="analytics-card">
         <div class="analytics-header">
-          <span class="analytics-icon">${getMetricIcon(type)}</span>
+          <div class="analytics-icon-wrap">${getMetricIcon(type)}</div>
           <h3>${type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ')}</h3>
         </div>
         <div class="analytics-stats">
@@ -1196,7 +1193,7 @@ async function displayAnalyticsWithCharts(data) {
           </div>
           <div class="stat">
             <span class="stat-label">Range</span>
-            <span class="stat-value">${stats.min.toFixed(1)} - ${stats.max.toFixed(1)}</span>
+            <span class="stat-value">${stats.min.toFixed(1)}–${stats.max.toFixed(1)}</span>
           </div>
           <div class="stat">
             <span class="stat-label">Entries</span>
@@ -1251,7 +1248,7 @@ async function displayAnalyticsWithCharts(data) {
 async function loadReport(period) {
   const content = document.getElementById("reports-content");
   if (!content) return;
-  content.innerHTML = "<div class='loading'>Generating report...</div>";
+  content.innerHTML = `<div class='loading'><div class='loading-dots'><span></span><span></span><span></span></div>Generating report…</div>`;
   
   try {
     const res = await fetch(`/api/reports?period=${period}`, {

@@ -3,55 +3,58 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HealthHero - Your AI Health Coach</title>
+  <title>HealthHero — Your AI Health Coach</title>
   <link rel="stylesheet" href="/static/styles.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
   <div id="app">
-    <!-- Login/Register Modal -->
+
+    <!-- ── AUTH MODAL ──────────────────────────── -->
     <div id="auth-modal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
-          <h2>Welcome to HealthHero</h2>
-          <p>Your AI-powered health and wellness coach</p>
+          <div class="modal-logo-badge">🌿</div>
+          <h2>HealthHero</h2>
+          <p>Your personal AI wellness companion</p>
         </div>
         <div class="auth-tabs">
-          <button class="tab-btn active" data-tab="login">Login</button>
-          <button class="tab-btn" data-tab="register">Register</button>
+          <button class="tab-btn active" data-tab="login">Sign in</button>
+          <button class="tab-btn" data-tab="register">Create account</button>
         </div>
         <form id="login-form" class="auth-form">
-          <input type="text" id="login-username" placeholder="Username" required />
-          <input type="password" id="login-password" placeholder="Password" required />
-          <button type="submit" class="btn-primary">Login</button>
+          <input type="text" id="login-username" placeholder="Username" required autocomplete="username" />
+          <input type="password" id="login-password" placeholder="Password" required autocomplete="current-password" />
+          <button type="submit" class="btn-primary" style="justify-content:center;">Sign in</button>
           <div id="auth-error" class="error-message"></div>
         </form>
         <form id="register-form" class="auth-form" style="display: none;">
-          <input type="text" id="register-username" placeholder="Username" required />
-          <input type="email" id="register-email" placeholder="Email" required />
-          <input type="password" id="register-password" placeholder="Password" required />
-          <button type="submit" class="btn-primary">Register</button>
+          <input type="text" id="register-username" placeholder="Username" required autocomplete="username" />
+          <input type="email" id="register-email" placeholder="Email address" required autocomplete="email" />
+          <input type="password" id="register-password" placeholder="Password" required autocomplete="new-password" />
+          <button type="submit" class="btn-primary" style="justify-content:center;">Create account</button>
           <div id="register-error" class="error-message"></div>
         </form>
       </div>
     </div>
 
-    <!-- Main App -->
+    <!-- ── MAIN APP ────────────────────────────── -->
     <div id="main-app" style="display: none;">
-      <!-- Sidebar -->
+
+      <!-- SIDEBAR -->
       <aside class="sidebar">
         <div class="sidebar-header">
           <div class="logo">
-            <span class="logo-icon">⚕️</span>
-            <h1>HealthHero</h1>
+            <div class="logo-badge">🌿</div>
+            <h1>Health<span>Hero</span></h1>
           </div>
-          <button id="help-btn" class="btn-icon" title="Help">❓</button>
+          <button id="help-btn" class="btn-icon" title="Help &amp; Support">?</button>
         </div>
-        
-        <!-- User Profile Button -->
+
+        <!-- User Profile -->
         <div id="user-profile-btn" class="user-profile-btn">
           <div class="user-avatar" id="user-avatar">U</div>
           <div class="user-info">
@@ -59,88 +62,97 @@
             <div class="user-email" id="user-email">user@example.com</div>
           </div>
         </div>
-        
+
         <nav class="sidebar-nav">
+          <div class="nav-section-label">Main</div>
           <button class="nav-item active" data-view="chat">
-            <span class="nav-icon">💬</span>
+            <div class="nav-icon-wrap">💬</div>
             <span>Chat</span>
+            <div class="nav-dot"></div>
           </button>
           <button class="nav-item" data-view="tracking">
-            <span class="nav-icon">📊</span>
+            <div class="nav-icon-wrap">📊</div>
             <span>Tracking</span>
+            <div class="nav-dot"></div>
           </button>
           <button class="nav-item" data-view="reminders">
-            <span class="nav-icon">⏰</span>
+            <div class="nav-icon-wrap">⏰</div>
             <span>Reminders</span>
+            <div class="nav-dot"></div>
           </button>
           <button class="nav-item" data-view="goals">
-            <span class="nav-icon">🎯</span>
+            <div class="nav-icon-wrap">🎯</div>
             <span>Goals</span>
+            <div class="nav-dot"></div>
           </button>
+          <div class="nav-section-label">Insights</div>
           <button class="nav-item" data-view="analytics">
-            <span class="nav-icon">📈</span>
+            <div class="nav-icon-wrap">📈</div>
             <span>Analytics</span>
+            <div class="nav-dot"></div>
           </button>
           <button class="nav-item" data-view="reports">
-            <span class="nav-icon">📄</span>
+            <div class="nav-icon-wrap">📄</div>
             <span>Reports</span>
+            <div class="nav-dot"></div>
           </button>
+          <div class="nav-section-label">Account</div>
           <button class="nav-item" data-view="settings">
-            <span class="nav-icon">⚙️</span>
+            <div class="nav-icon-wrap">⚙️</div>
             <span>Settings</span>
+            <div class="nav-dot"></div>
           </button>
         </nav>
-        
-        <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border-color);">
-          <button id="logout-btn" class="nav-item" style="color: var(--accent-red);">
-            <span class="nav-icon">🚪</span>
-            <span>Logout</span>
+
+        <div class="sidebar-footer">
+          <button id="logout-btn" class="nav-item" style="color:var(--rose);width:100%;">
+            <div class="nav-icon-wrap">🚪</div>
+            <span>Log out</span>
           </button>
         </div>
       </aside>
 
-      <!-- Main Content -->
+      <!-- MAIN CONTENT -->
       <main class="main-content">
-        <!-- Chat View -->
+
+        <!-- ── CHAT ──────────────────────── -->
         <div id="chat-view" class="view active">
           <div class="view-header">
-            <div>
+            <div class="view-header-text">
               <h2>Chat with HealthHero</h2>
-              <p>Ask me about your health, wellness, and goals</p>
+              <p>Ask me anything about your health, wellness, and goals</p>
             </div>
           </div>
-          
-          <!-- Quick Actions -->
+
           <div class="quick-actions">
             <button class="quick-action-btn" data-quick="water">
-              <span class="icon">💧</span>
-              <span>Log Water</span>
+              <span class="icon">💧</span><span>Log Water</span>
             </button>
             <button class="quick-action-btn" data-quick="steps">
-              <span class="icon">🚶</span>
-              <span>Log Steps</span>
+              <span class="icon">🚶</span><span>Log Steps</span>
             </button>
             <button class="quick-action-btn" data-quick="sleep">
-              <span class="icon">😴</span>
-              <span>Log Sleep</span>
+              <span class="icon">😴</span><span>Log Sleep</span>
             </button>
             <button class="quick-action-btn" data-quick="exercise">
-              <span class="icon">🏃</span>
-              <span>Log Exercise</span>
+              <span class="icon">🏃</span><span>Log Exercise</span>
             </button>
           </div>
-          
+
           <div id="chat" class="chat-container"></div>
           <form id="chat-form" class="chat-form">
-            <input id="user-input" type="text" placeholder="Ask about water, steps, sleep, exercise..." autocomplete="off" />
-            <button type="submit" class="btn-send">Send</button>
+            <input id="user-input" type="text" placeholder="Ask about your health, log a metric, get advice…" autocomplete="off" />
+            <button type="submit" class="btn-send">
+              <span>Send</span>
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M1 7.5h13M8 2l6 5.5-6 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
           </form>
         </div>
 
-        <!-- Tracking View -->
+        <!-- ── TRACKING ──────────────────── -->
         <div id="tracking-view" class="view">
           <div class="view-header">
-            <div>
+            <div class="view-header-text">
               <h2>Health Tracking</h2>
               <p>Log your daily health metrics</p>
             </div>
@@ -148,8 +160,8 @@
           <div class="tracking-content">
             <form id="metric-form" class="metric-form">
               <select id="metric-type" required>
-                <option value="">Select metric...</option>
-                <option value="water">💧 Water (liters)</option>
+                <option value="">Select metric…</option>
+                <option value="water">💧 Water (litres)</option>
                 <option value="steps">🚶 Steps</option>
                 <option value="sleep">😴 Sleep (hours)</option>
                 <option value="exercise">🏃 Exercise (minutes)</option>
@@ -158,26 +170,26 @@
               </select>
               <input type="number" id="metric-value" step="0.1" placeholder="Value" required />
               <input type="text" id="metric-notes" placeholder="Notes (optional)" />
-              <button type="submit" class="btn-primary">Add Metric</button>
+              <button type="submit" class="btn-primary">Add Entry</button>
             </form>
             <div id="metrics-list" class="metrics-list"></div>
           </div>
         </div>
 
-        <!-- Reminders View -->
+        <!-- ── REMINDERS ─────────────────── -->
         <div id="reminders-view" class="view">
           <div class="view-header">
-            <div>
-              <h2>Health Reminders</h2>
-              <p>Set reminders for your health activities</p>
+            <div class="view-header-text">
+              <h2>Reminders</h2>
+              <p>Stay on track with timely health nudges</p>
             </div>
           </div>
           <div class="reminders-content">
             <form id="reminder-form" class="reminder-form">
-              <input type="text" id="reminder-title" placeholder="Title (e.g., Drink Water)" required />
+              <input type="text" id="reminder-title" placeholder="Title — e.g. Drink water" required />
               <textarea id="reminder-description" placeholder="Description (optional)"></textarea>
               <select id="reminder-type" required>
-                <option value="">Select type...</option>
+                <option value="">Select type…</option>
                 <option value="water">💧 Water</option>
                 <option value="medication">💊 Medication</option>
                 <option value="exercise">🏃 Exercise</option>
@@ -192,97 +204,108 @@
           </div>
         </div>
 
-        <!-- Goals View -->
+        <!-- ── GOALS ─────────────────────── -->
         <div id="goals-view" class="view">
           <div class="view-header">
-            <div>
-              <h2>Health Goals</h2>
-              <p>Set and track your health goals</p>
+            <div class="view-header-text">
+              <h2>Goals</h2>
+              <p>Set milestones and track your progress</p>
             </div>
-            <button class="btn-primary" onclick="openGoalModal()">+ New Goal</button>
+            <div class="view-actions">
+              <button class="btn-primary" onclick="openGoalModal()">
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v11M1 6.5h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                New Goal
+              </button>
+            </div>
           </div>
           <div class="tracking-content">
             <div id="goals-list" class="goals-list"></div>
           </div>
         </div>
 
-        <!-- Analytics View -->
+        <!-- ── ANALYTICS ─────────────────── -->
         <div id="analytics-view" class="view">
           <div class="view-header">
-            <div>
-              <h2>Health Analytics</h2>
+            <div class="view-header-text">
+              <h2>Analytics</h2>
               <p>Insights into your health journey</p>
             </div>
           </div>
           <div id="analytics-content" class="analytics-content">
-            <div class="loading">Loading analytics...</div>
+            <div class="loading">
+              <div class="loading-dots"><span></span><span></span><span></span></div>
+              Loading analytics…
+            </div>
           </div>
         </div>
 
-        <!-- Reports View -->
+        <!-- ── REPORTS ───────────────────── -->
         <div id="reports-view" class="view">
           <div class="view-header">
-            <div>
-              <h2>Health Reports</h2>
+            <div class="view-header-text">
+              <h2>Reports</h2>
               <p>Weekly and monthly health summaries</p>
             </div>
             <div class="view-actions">
-              <button class="btn-secondary" onclick="loadReport('week')">Week</button>
-              <button class="btn-secondary" onclick="loadReport('month')">Month</button>
+              <button class="btn-secondary" onclick="loadReport('week')">This week</button>
+              <button class="btn-secondary" onclick="loadReport('month')">This month</button>
             </div>
           </div>
           <div id="reports-content" class="tracking-content">
-            <div class="loading">Select a period to generate report...</div>
+            <div class="empty-state">
+              <div class="empty-state-icon">📊</div>
+              <strong>No report yet</strong>
+              Choose a time period above to generate your health report.
+            </div>
           </div>
         </div>
 
-        <!-- Settings View -->
+        <!-- ── SETTINGS ──────────────────── -->
         <div id="settings-view" class="view">
           <div class="view-header">
-            <div>
+            <div class="view-header-text">
               <h2>Settings</h2>
-              <p>Customize your HealthHero experience</p>
+              <p>Customise your HealthHero experience</p>
             </div>
           </div>
           <div class="tracking-content">
-            <div class="metric-form">
-              <div class="modal-section">
-                <h3>Unit Preferences</h3>
-                <div class="form-group">
-                  <label for="unit-system">Unit System</label>
-                  <select id="unit-system">
-                    <option value="metric">Metric (kg, cm, °C)</option>
-                    <option value="imperial">Imperial (lbs, ft, °F)</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="timezone">Timezone</label>
-                  <select id="timezone"></select>
-                </div>
-                <div class="form-group">
-                  <label for="date-format">Date Format</label>
-                  <select id="date-format">
-                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
-                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
-                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
-                  </select>
-                </div>
+            <div class="settings-section">
+              <h3>Preferences</h3>
+              <div class="form-group">
+                <label for="unit-system">Unit System</label>
+                <select id="unit-system">
+                  <option value="metric">Metric (kg, cm, °C)</option>
+                  <option value="imperial">Imperial (lbs, ft, °F)</option>
+                </select>
               </div>
-              <div class="modal-actions">
+              <div class="form-group">
+                <label for="timezone">Timezone</label>
+                <select id="timezone"></select>
+              </div>
+              <div class="form-group">
+                <label for="date-format">Date Format</label>
+                <select id="date-format">
+                  <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                  <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                  <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                </select>
+              </div>
+              <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;">
                 <button type="button" class="btn-secondary" onclick="loadSettings()">Reset</button>
                 <button type="button" class="btn-primary" onclick="saveSettings()">Save Settings</button>
               </div>
             </div>
           </div>
         </div>
+
       </main>
     </div>
 
-    <!-- Profile Modal -->
+    <!-- ── PROFILE MODAL ───────────────────────── -->
     <div id="profile-modal" class="profile-modal">
       <div class="modal-content modal-large">
         <div class="modal-header">
-          <h2>Profile Settings</h2>
+          <h2>Profile</h2>
           <p>Manage your personal information</p>
         </div>
         <form id="profile-form">
@@ -293,7 +316,7 @@
               <div>
                 <input type="file" id="avatar-input" accept="image/*" style="display: none;" />
                 <button type="button" class="btn-secondary" onclick="document.getElementById('avatar-input').click()">Change Avatar</button>
-                <p style="color: var(--text-muted); font-size: 12px; margin-top: 8px;">JPG, PNG up to 2MB</p>
+                <p style="color:var(--ink-muted);font-size:12px;margin-top:7px;">JPG or PNG, max 2 MB</p>
               </div>
             </div>
           </div>
@@ -324,11 +347,11 @@
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label for="profile-height">Height</label>
+                <label for="profile-height">Height (cm)</label>
                 <input type="number" id="profile-height" step="0.1" placeholder="cm" />
               </div>
               <div class="form-group">
-                <label for="profile-weight">Weight</label>
+                <label for="profile-weight">Weight (kg)</label>
                 <input type="number" id="profile-weight" step="0.1" placeholder="kg" />
               </div>
             </div>
@@ -336,16 +359,16 @@
           <div class="modal-section">
             <h3>Health Information</h3>
             <div class="form-group">
-              <label for="profile-conditions">Medical Conditions (comma-separated)</label>
-              <input type="text" id="profile-conditions" placeholder="e.g., Diabetes, Hypertension" />
+              <label for="profile-conditions">Medical Conditions <span style="font-weight:400;color:var(--ink-muted)">(comma-separated)</span></label>
+              <input type="text" id="profile-conditions" placeholder="e.g. Diabetes, Hypertension" />
             </div>
             <div class="form-group">
-              <label for="profile-medications">Current Medications (comma-separated)</label>
-              <input type="text" id="profile-medications" placeholder="e.g., Aspirin, Metformin" />
+              <label for="profile-medications">Current Medications <span style="font-weight:400;color:var(--ink-muted)">(comma-separated)</span></label>
+              <input type="text" id="profile-medications" placeholder="e.g. Aspirin, Metformin" />
             </div>
             <div class="form-group">
-              <label for="profile-allergies">Allergies (comma-separated)</label>
-              <input type="text" id="profile-allergies" placeholder="e.g., Peanuts, Penicillin" />
+              <label for="profile-allergies">Allergies <span style="font-weight:400;color:var(--ink-muted)">(comma-separated)</span></label>
+              <input type="text" id="profile-allergies" placeholder="e.g. Peanuts, Penicillin" />
             </div>
           </div>
           <div class="modal-actions">
@@ -356,7 +379,7 @@
       </div>
     </div>
 
-    <!-- Goal Modal -->
+    <!-- ── GOAL MODAL ──────────────────────────── -->
     <div id="goal-modal" class="profile-modal">
       <div class="modal-content modal-large">
         <div class="modal-header">
@@ -369,32 +392,32 @@
             <div class="form-group">
               <label for="goal-type">Goal Type</label>
               <select id="goal-type" required>
-                <option value="">Select type...</option>
+                <option value="">Select type…</option>
                 <option value="water">💧 Water Intake</option>
                 <option value="steps">🚶 Daily Steps</option>
                 <option value="sleep">😴 Sleep Hours</option>
                 <option value="exercise">🏃 Exercise Minutes</option>
-                <option value="weight">⚖️ Weight Loss/Gain</option>
+                <option value="weight">⚖️ Weight</option>
                 <option value="heart_rate">❤️ Heart Rate</option>
                 <option value="other">📝 Other</option>
               </select>
             </div>
             <div class="form-group">
               <label for="goal-title">Title</label>
-              <input type="text" id="goal-title" placeholder="e.g., Drink 2L water daily" required />
+              <input type="text" id="goal-title" placeholder="e.g. Drink 2 L water daily" required />
             </div>
             <div class="form-group">
-              <label for="goal-description">Description (optional)</label>
-              <textarea id="goal-description" placeholder="Add more details about your goal..."></textarea>
+              <label for="goal-description">Description <span style="font-weight:400;color:var(--ink-muted)">(optional)</span></label>
+              <textarea id="goal-description" placeholder="Add more detail about your goal…"></textarea>
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label for="goal-target">Target Value</label>
-                <input type="number" id="goal-target" step="0.1" placeholder="e.g., 2" required />
+                <input type="number" id="goal-target" step="0.1" placeholder="e.g. 2" required />
               </div>
               <div class="form-group">
                 <label for="goal-unit">Unit</label>
-                <input type="text" id="goal-unit" placeholder="e.g., liters, steps, hours" required />
+                <input type="text" id="goal-unit" placeholder="e.g. litres, steps, hours" required />
               </div>
             </div>
             <div class="form-row">
@@ -403,7 +426,7 @@
                 <input type="date" id="goal-start-date" required />
               </div>
               <div class="form-group">
-                <label for="goal-end-date">End Date (optional)</label>
+                <label for="goal-end-date">End Date <span style="font-weight:400;color:var(--ink-muted)">(optional)</span></label>
                 <input type="date" id="goal-end-date" />
               </div>
             </div>
@@ -416,84 +439,76 @@
       </div>
     </div>
 
-    <!-- Help Modal -->
+    <!-- ── HELP MODAL ──────────────────────────── -->
     <div id="help-modal" class="help-modal">
       <div class="modal-content modal-large">
         <div class="modal-header">
-          <h2>Help & Support</h2>
-          <p>Get help with using HealthHero</p>
+          <h2>Help &amp; Support</h2>
+          <p>Everything you need to get the most from HealthHero</p>
         </div>
         <div class="help-content">
           <div class="modal-section">
             <h3>Getting Started</h3>
-            <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px;">
-              Welcome to HealthHero! Start by chatting with our AI health coach, tracking your daily metrics, 
-              setting reminders, and viewing your health analytics. Use the quick action buttons for fast logging.
+            <p style="color:var(--ink-soft);line-height:1.7;margin-bottom:16px;">
+              Start by chatting with your AI health coach, tracking daily metrics,
+              setting reminders, and reviewing your analytics. Use the quick-action
+              pills in Chat for one-tap logging.
             </p>
           </div>
           <div class="modal-section">
-            <h3>Frequently Asked Questions</h3>
+            <h3>FAQ</h3>
             <div class="faq-item">
               <div class="faq-question" onclick="toggleFaq(this)">
-                <h4>How do I track my health metrics?</h4>
-                <span>▼</span>
+                <h4>How do I track health metrics?</h4><span>▼</span>
               </div>
               <div class="faq-answer">
-                <p>Go to the Tracking section and select a metric type, enter the value, and add optional notes. 
-                You can also use quick action buttons in the Chat view for faster logging.</p>
+                <p>Open <strong>Tracking</strong>, choose a metric type, enter a value, and tap Add Entry. Quick-action buttons in Chat let you log even faster.</p>
               </div>
             </div>
             <div class="faq-item">
               <div class="faq-question" onclick="toggleFaq(this)">
-                <h4>How do reminders work?</h4>
-                <span>▼</span>
+                <h4>How do reminders work?</h4><span>▼</span>
               </div>
               <div class="faq-answer">
-                <p>Create reminders in the Reminders section. Set a title, type, and scheduled time. 
-                Reminders help you stay on track with your health goals.</p>
+                <p>Go to <strong>Reminders</strong>, fill in the title, type, and time. Reminders keep you accountable throughout the day.</p>
               </div>
             </div>
             <div class="faq-item">
               <div class="faq-question" onclick="toggleFaq(this)">
-                <h4>Can I change my units?</h4>
-                <span>▼</span>
+                <h4>Can I change units?</h4><span>▼</span>
               </div>
               <div class="faq-answer">
-                <p>Yes! Go to Settings and change your unit system (Metric/Imperial), timezone, and date format preferences.</p>
+                <p>Yes — go to <strong>Settings</strong> and switch between Metric and Imperial, adjust your timezone, and pick a date format.</p>
               </div>
             </div>
             <div class="faq-item">
               <div class="faq-question" onclick="toggleFaq(this)">
-                <h4>How do I update my profile?</h4>
-                <span>▼</span>
+                <h4>How do I update my profile?</h4><span>▼</span>
               </div>
               <div class="faq-answer">
-                <p>Click on your profile picture/name in the sidebar to open the Profile Settings modal. 
-                You can update your personal information, health details, and upload a profile picture.</p>
+                <p>Click your name/avatar in the sidebar to open Profile Settings. You can update personal info, health details, and your avatar.</p>
               </div>
             </div>
             <div class="faq-item">
               <div class="faq-question" onclick="toggleFaq(this)">
-                <h4>Is my data secure?</h4>
-                <span>▼</span>
+                <h4>Is my data secure?</h4><span>▼</span>
               </div>
               <div class="faq-answer">
-                <p>Yes! All your data is encrypted and stored securely. We use JWT authentication and follow 
-                best practices for data protection. Your health information is private and confidential.</p>
+                <p>All data is encrypted and stored securely using JWT authentication. Your health information is private and never shared.</p>
               </div>
             </div>
           </div>
           <div class="modal-section">
             <h3>Keyboard Shortcuts</h3>
-            <div style="color: var(--text-secondary); line-height: 1.8;">
-              <p><strong>Enter:</strong> Send chat message</p>
-              <p><strong>Esc:</strong> Close modals</p>
-              <p><strong>/:</strong> Focus chat input</p>
+            <div style="color:var(--ink-soft);line-height:2;font-size:13.5px;">
+              <p><kbd style="background:var(--warm-card);border:1px solid var(--warm-border);border-radius:5px;padding:2px 7px;font-family:monospace;">Enter</kbd> &nbsp;Send chat message</p>
+              <p><kbd style="background:var(--warm-card);border:1px solid var(--warm-border);border-radius:5px;padding:2px 7px;font-family:monospace;">Esc</kbd> &nbsp;Close modals</p>
+              <p><kbd style="background:var(--warm-card);border:1px solid var(--warm-border);border-radius:5px;padding:2px 7px;font-family:monospace;">/</kbd> &nbsp;Focus chat input</p>
             </div>
           </div>
         </div>
         <div class="modal-actions">
-          <button type="button" class="btn-primary" onclick="closeHelpModal()">Got it!</button>
+          <button type="button" class="btn-primary" onclick="closeHelpModal()">Got it</button>
         </div>
       </div>
     </div>
@@ -501,6 +516,7 @@
     <!-- Toast Notifications -->
     <div id="toast-container"></div>
   </div>
+
   <script src="/static/app.js"></script>
 </body>
 </html>
