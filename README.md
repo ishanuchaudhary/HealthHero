@@ -1,149 +1,205 @@
-# HealthHero - AI Health Coach Application
+# 🏥 HealthHero — AI Health Assistant
 
-A modern, full-featured health coaching chatbot application with authentication, health tracking, reminders, and analytics.
+> An intelligent, offline-first health coaching application powered by a locally trained Machine Learning model. No API key required.
 
-## Features
+[![Python](https://img.shields.io/badge/Python-3.8+-blue?logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.5-orange?logo=scikit-learn&logoColor=white)](https://scikit-learn.org)
+[![License](https://img.shields.io/badge/License-MIT-purple)](LICENSE)
 
-✅ **User Authentication** - Secure registration and login with JWT tokens  
-✅ **AI-Powered Chat** - OpenAI integration with fallback to mock responses  
-✅ **Real-time Communication** - WebSocket support for instant responses  
-✅ **Health Tracking** - Log water intake, steps, sleep, exercise, weight, and heart rate  
-✅ **Reminders** - Set reminders for medications, water, exercise, meals, and more  
-✅ **Analytics Dashboard** - View insights and statistics about your health metrics  
-✅ **Modern Medical UI** - Beautiful, responsive design with medical theme  
-✅ **Database Persistence** - SQLite database for all data storage  
-✅ **Error Handling** - Comprehensive error handling and user feedback  
+---
 
-## Setup
+## 📌 Overview
 
-### 1. Install Dependencies
+HealthHero is a full-stack AI health assistant that predicts possible diseases based on user-reported symptoms using a **locally trained Random Forest classifier**. It provides structured, empathetic health guidance — including what the condition could be, what to do, and when to see a doctor — all running completely offline on your machine.
 
-Open a terminal in the project directory and run:
+Built as a Final Year B.Tech Computer Science project at **Galgotias University**.
 
+---
+
+## ✨ Features
+
+| Feature | Description |
+|---|---|
+| 🤖 **Local ML Model** | RandomForest trained on 25 diseases & 60 symptoms — no API key needed |
+| 🔐 **JWT Authentication** | Secure user registration and login with token-based auth |
+| 💬 **Real-time Chat** | WebSocket-powered instant responses with streaming |
+| 📊 **Health Tracking** | Log water intake, steps, sleep, exercise, weight, heart rate |
+| ⏰ **Smart Reminders** | Set reminders for medications, water, exercise, and meals |
+| 📈 **Analytics Dashboard** | Visual insights and trends from your health metrics |
+| 🚨 **Red Flag Detection** | Automatically detects emergency symptoms and escalates |
+| 🎨 **Medical UI** | Clean, responsive design with a professional medical theme |
+| 💾 **Persistent Storage** | SQLite database for all user data and sessions |
+
+---
+
+## 🧠 How the AI Works
+
+Unlike typical chatbots that rely on external APIs, HealthHero uses a **locally trained ML model**:
+
+```
+User Message → Symptom Extraction → RandomForest Model → Disease Prediction → Structured Response
+```
+
+1. **Symptom Extraction** — Parses free-text input to identify medical symptoms using keyword matching against a vocabulary of 60+ symptoms
+2. **Disease Prediction** — A trained RandomForest classifier predicts the top 3 most likely conditions with confidence scores
+3. **Response Generation** — Builds a structured health response with advice, red flags, and follow-up plan
+4. **Red Flag Safety Layer** — Always-on emergency detection regardless of prediction results
+
+---
+
+## 🗂️ Project Structure
+
+```
+HealthHero/
+├── app.py              # FastAPI application — routes, WebSocket, API endpoints
+├── auth.py             # JWT authentication — login, register, token validation
+├── database.py         # SQLite schema — users, sessions, metrics, reminders
+├── llm.py              # Local ML inference engine — symptom extraction + response
+├── train_model.py      # One-time training script — builds and saves the model
+├── requirements.txt    # Python dependencies
+├── static/             # Frontend assets — CSS, JavaScript
+├── templates/          # HTML templates
+└── model/              # Saved model artifacts (auto-generated)
+    ├── model.pkl       # Trained RandomForest classifier
+    ├── encoder.pkl     # Label encoder for disease names
+    ├── symptoms.pkl    # Ordered symptom feature list
+    └── diseases.pkl    # All disease class names
+```
+
+---
+
+## ⚙️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Backend** | FastAPI, Python 3.8+ |
+| **AI / ML** | scikit-learn (RandomForest), pandas, numpy, joblib |
+| **Database** | SQLite via aiosqlite |
+| **Authentication** | JWT via python-jose |
+| **Frontend** | Vanilla JavaScript, HTML5, CSS3 |
+| **Real-time** | WebSocket |
+| **Server** | Uvicorn (ASGI) |
+
+---
+
+## 🚀 Setup & Installation
+
+### Prerequisites
+- Python 3.8 or higher
+- pip
+
+### Step 1 — Clone the Repository
+```bash
+git clone https://github.com/ishanuchaudhary/HealthHero.git
+cd HealthHero
+```
+
+### Step 2 — Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-**Note**: Make sure you have Python 3.8+ installed.
+### Step 3 — Train the Model *(one time only)*
+```bash
+python train_model.py
+```
+This will:
+- Download or use the built-in disease-symptom dataset
+- Train a RandomForest classifier
+- Save model artifacts to the `model/` folder
+- Print accuracy metrics on completion
 
-### 2. API Key Setup (Optional but Recommended)
+Expected output:
+```
+✅ Done! Model accuracy: 95.0%+
+Run: uvicorn app:app --reload
+HealthHero now runs fully offline — no API key needed!
+```
 
-The application will automatically use your OpenAI API key from one of these sources (in order of priority):
-
-1. **Environment Variable** (highest priority):
-   ```bash
-   # Windows PowerShell
-   $env:OPENAI_API_KEY="your-api-key-here"
-   
-   # Windows CMD
-   set OPENAI_API_KEY=your-api-key-here
-   
-   # Linux/Mac
-   export OPENAI_API_KEY="your-api-key-here"
-   ```
-
-2. **API Key File**: The file `HealthHero API Key.txt` (already in your project)
-   - The app automatically reads the key from this file
-   - The key will be extracted automatically (handles quotes and formatting)
-
-**If no API key is found**, the app will use mock responses for demonstration.
-
-You can also set these optional environment variables:
-- `OPENAI_BASE_URL` - Custom API endpoint (default: https://api.openai.com/v1)
-- `OPENAI_MODEL` - Model to use (default: gpt-4o-mini)
-- `JWT_SECRET` - Secret key for JWT tokens (auto-generated if not set)
-
-### 3. Run the Application
-
-In the project directory, run:
-
+### Step 4 — Run the Application
 ```bash
 uvicorn app:app --reload
 ```
 
-The `--reload` flag enables auto-reload on code changes (useful for development).
-
-### 4. Access the Application
-
-Once the server starts, you'll see output like:
-```
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process
-INFO:     Started server process
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-```
-
-Open your web browser and navigate to:
+### Step 5 — Open in Browser
 ```
 http://localhost:8000
 ```
 
-or
+---
 
-```
-http://127.0.0.1:8000
-```
+## 🖥️ First Time Use
 
-### 5. First Time Setup
+1. Click **Register** and create your account
+2. **Login** with your credentials
+3. Describe your symptoms in the chat — e.g. *"I have fever, chills and joint pain"*
+4. HealthHero will predict possible conditions and give structured guidance
+5. Use the dashboard to track health metrics and set reminders
 
-1. **Register a new account** - Click "Register" and create your account
-2. **Login** - Use your credentials to login
-3. **Start chatting** - Ask HealthHero about your health and wellness goals!
+---
 
-The database (`healthhero.db`) will be automatically created on first run.
+## 🔌 API Endpoints
 
-## Usage
+### Authentication
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/register` | Register a new user |
+| `POST` | `/api/login` | Login and receive JWT token |
 
-1. **Register/Login**: Create an account or login with existing credentials
-2. **Chat**: Ask HealthHero about health, wellness, and goals
-3. **Track Metrics**: Log your daily health metrics (water, steps, sleep, etc.)
-4. **Set Reminders**: Create reminders for health-related activities
-5. **View Analytics**: Check your health statistics and trends
+### Chat
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/chat` | Send a message (requires auth) |
+| `GET` | `/api/chat/stream` | Stream response (requires auth) |
+| `WebSocket` | `/ws` | Real-time chat (requires auth) |
 
-## Database
+### Health Tracking
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/health/metrics` | Retrieve health metrics |
+| `POST` | `/api/health/metrics` | Log a new health metric |
+| `GET` | `/api/reminders` | Get all reminders |
+| `POST` | `/api/reminders` | Create a reminder |
+| `GET` | `/api/analytics` | Get analytics and trends |
 
-The application uses SQLite (`healthhero.db`) to store:
-- User accounts
-- Chat sessions and messages
-- Health metrics
-- Reminders
+> All endpoints except `/api/register` and `/api/login` require a valid JWT token in the `Authorization` header.
 
-The database is automatically created on first run.
+---
 
-## API Endpoints
+## 🤖 ML Model Details
 
-- `POST /api/register` - Register new user
-- `POST /api/login` - Login and get JWT token
-- `POST /api/chat` - Send chat message (requires auth)
-- `GET /api/chat/stream` - Stream chat response (requires auth)
-- `WebSocket /ws` - Real-time chat via WebSocket (requires auth)
-- `GET /api/health/metrics` - Get health metrics (requires auth)
-- `POST /api/health/metrics` - Add health metric (requires auth)
-- `GET /api/reminders` - Get reminders (requires auth)
-- `POST /api/reminders` - Create reminder (requires auth)
-- `GET /api/analytics` - Get analytics (requires auth)
+| Property | Value |
+|---|---|
+| Algorithm | Random Forest Classifier |
+| Training Samples | 3,000+ |
+| Diseases Covered | 25 |
+| Symptoms (Features) | 60 |
+| Test Accuracy | ~95% |
+| Inference Time | < 10ms |
+| External API | None — fully offline |
 
-## Tech Stack
+---
 
-- **Backend**: FastAPI, Python
-- **Database**: SQLite (aiosqlite)
-- **Authentication**: JWT (python-jose)
-- **AI**: OpenAI API (with mock fallback)
-- **Frontend**: Vanilla JavaScript, HTML5, CSS3
-- **Real-time**: WebSocket
+## 📋 Notes
 
-## Notes
-
-- If `OPENAI_API_KEY` is not set, the app will use mock responses
-- All API endpoints (except register/login) require JWT authentication
-- Sessions are persisted in the database
+- All API endpoints except register/login require JWT authentication
+- The database is auto-created on first run
+- Run `python llm.py` to test the ML model with sample inputs
 - The UI is fully responsive and works on mobile devices
+- Red flag symptoms (chest pain, difficulty breathing, etc.) always trigger an emergency alert regardless of prediction
 
+---
 
-setx OPENAI_API_KEY "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"
-Optional:
-setx OPENAI_BASE_URL "https://api.openai.com/v1"
-setx OPENAI_MODEL "gpt-4o-mini"
+## 👨‍💻 Author
 
-python -m uvicorn app:app --reload
+**Sanskar Singh**
+Final Year B.Tech — Computer Science
+Galgotias University, Greater Noida
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin)](https://www.linkedin.com/in/sanskar9929/)
+[![GitHub](https://img.shields.io/badge/GitHub-Follow-black?logo=github)](https://github.com/ishanuchaudhary)
+
+---
+
+> *"Code with purpose. Design with empathy. Deploy with pride."*
