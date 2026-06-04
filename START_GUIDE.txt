@@ -1,339 +1,379 @@
 ================================================================================
-                    HEALTHHERO - START GUIDE
-                    Step-by-Step Setup Instructions
+                         HEALTHHERO - START GUIDE
+                      Step-by-Step Setup Instructions
+                         Offline ML Model Edition
 ================================================================================
 
-This guide will walk you through setting up and running the HealthHero 
-application from scratch.
+  HealthHero now runs 100% offline using a locally trained Machine Learning
+  model. No API key, no internet connection, no external services required.
 
 ================================================================================
 STEP 1: PREREQUISITES
 ================================================================================
 
-1.1. Check Python Installation
-   - Open Command Prompt or PowerShell
-   - Type: python --version
-   - You should see Python 3.8 or higher
-   - If not installed, download from: https://www.python.org/downloads/
-   - During installation, CHECK "Add Python to PATH"
+1.1  Check Python Version
+     - Open Command Prompt or PowerShell
+     - Run: python --version
+     - You need Python 3.8 or higher
+     - Download from: https://www.python.org/downloads/
+     - IMPORTANT: During installation, check "Add Python to PATH"
 
-1.2. Verify pip is installed
-   - Type: pip --version
-   - If not found, install pip separately
+1.2  Verify pip is installed
+     - Run: pip --version
+     - If not found: python -m ensurepip --upgrade
 
-================================================================================
-STEP 2: NAVIGATE TO PROJECT DIRECTORY
-================================================================================
-
-2.1. Open Command Prompt or PowerShell
-
-2.2. Navigate to the HealthHero folder:
-   
-   For Windows:
-   cd A:\HealthHero
-   
-   Or if your project is in a different location:
-   cd "C:\path\to\HealthHero"
-
-2.3. Verify you're in the correct directory:
-   - Type: dir (Windows) or ls (PowerShell)
-   - You should see files like: app.py, database.py, requirements.txt
+1.3  Verify git is installed (optional, for cloning)
+     - Run: git --version
+     - Download from: https://git-scm.com/downloads
 
 ================================================================================
-STEP 3: INSTALL DEPENDENCIES
+STEP 2: GET THE PROJECT
 ================================================================================
 
-3.1. Create a virtual environment (RECOMMENDED):
-   
-   Windows Command Prompt:
-   python -m venv venv
-   
-   Windows PowerShell:
-   python -m venv venv
+  Option A — Clone from GitHub (recommended):
 
-3.2. Activate the virtual environment:
-   
-   Windows Command Prompt:
-   venv\Scripts\activate
-   
-   Windows PowerShell:
-   venv\Scripts\Activate.ps1
-   
-   (If you get an execution policy error in PowerShell, run:
-    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser)
+     git clone https://github.com/ishanuchaudhary/HealthHero.git
+     cd HealthHero
 
-3.3. Install required packages:
-   pip install -r requirements.txt
-   
-   This will install:
-   - fastapi
-   - uvicorn
-   - jinja2
-   - pydantic
-   - httpx
-   - aiosqlite
-   - python-jose
-   - python-multipart
-   - email-validator
+  Option B — If you already have the folder:
 
-3.4. Wait for installation to complete
-   - You should see "Successfully installed..." messages
-   - If you see errors, make sure you have internet connection
+     cd A:\HealthHero
+     (or wherever your project is located)
+
+  Verify you're in the correct directory:
+     dir                         (Windows CMD)
+     ls                          (PowerShell)
+
+  You should see: app.py, llm.py, train_model.py, requirements.txt
 
 ================================================================================
-STEP 4: API KEY SETUP (OPTIONAL BUT RECOMMENDED)
+STEP 3: SET UP VIRTUAL ENVIRONMENT (RECOMMENDED)
 ================================================================================
 
-4.1. Get an OpenAI API Key (if you want AI features):
-   - Go to: https://platform.openai.com/api-keys
-   - Sign up or log in
-   - Create a new API key
-   - Copy the key (starts with "sk-")
+3.1  Create virtual environment:
 
-4.2. Set the API Key (Choose ONE method):
+     python -m venv venv
 
-   Method A - Environment Variable (RECOMMENDED):
-   
-   Windows Command Prompt:
-   setx OPENAI_API_KEY "your-api-key-here"
-   
-   Windows PowerShell:
-   $env:OPENAI_API_KEY="your-api-key-here"
-   
-   (Replace "your-api-key-here" with your actual key)
-   
-   Note: For setx, you need to close and reopen the terminal for it to take effect.
+3.2  Activate it:
 
-   Method B - API Key File:
-   - Open the file: "HealthHero API Key.txt"
-   - Paste your API key in the file
-   - Save the file
-   
-   The app will automatically read from this file if the environment variable 
-   is not set.
+     Windows CMD:         venv\Scripts\activate
+     Windows PowerShell:  venv\Scripts\Activate.ps1
 
-4.3. Optional: Set other environment variables:
-   
-   Windows Command Prompt:
-   setx OPENAI_BASE_URL "https://api.openai.com/v1"
-   setx OPENAI_MODEL "gpt-4o-mini"
-   
-   Windows PowerShell:
-   $env:OPENAI_BASE_URL="https://api.openai.com/v1"
-   $env:OPENAI_MODEL="gpt-4o-mini"
+     If PowerShell gives an execution policy error, run this first:
+     Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
-   Note: If you don't set an API key, the app will use mock responses for 
-   demonstration purposes.
+3.3  You should now see (venv) at the start of your terminal line.
+     This means the virtual environment is active.
 
 ================================================================================
-STEP 5: START THE SERVER
+STEP 4: INSTALL DEPENDENCIES
 ================================================================================
 
-5.1. Make sure you're in the HealthHero directory:
-   cd A:\HealthHero
-   (or your project path)
+4.1  Install all required packages:
 
-5.2. Make sure virtual environment is activated (if using one):
-   - You should see "(venv)" at the beginning of your command prompt
+     pip install -r requirements.txt
 
-5.3. Start the server:
-   
-   python -m uvicorn app:app --reload --host 127.0.0.1 --port 8000
-   
-   OR simply:
-   
-   python -m uvicorn app:app --reload
+  This installs:
+     - fastapi          Web framework
+     - uvicorn          ASGI server
+     - aiosqlite        Async SQLite database
+     - python-jose      JWT authentication
+     - python-multipart Form data handling
+     - scikit-learn     Machine learning (RandomForest model)
+     - pandas           Data processing for training
+     - numpy            Numerical computation
+     - joblib           Model saving and loading
+     - httpx            HTTP client
 
-5.4. You should see output like:
-   
-   INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-   INFO:     Started reloader process
-   INFO:     Started server process
-   INFO:     Waiting for application startup.
-   INFO:     Application startup complete.
-   ✓ OpenAI API key loaded successfully (using gpt-4o-mini)
-   INFO:     Uvicorn running on http://127.0.0.1:8000
+4.2  Wait for all packages to install. You should see:
+     "Successfully installed ..." at the end.
 
-5.5. If you see errors:
-   - Check that all dependencies are installed
-   - Make sure port 8000 is not already in use
-   - Check that Python version is 3.8 or higher
+  TROUBLESHOOTING:
+     - If you see errors, make sure your internet connection is active
+     - Try: pip install --upgrade pip  then repeat step 4.1
+     - If a package fails: pip install <package-name> individually
 
 ================================================================================
-STEP 6: ACCESS THE APPLICATION
+STEP 5: TRAIN THE ML MODEL  *** REQUIRED — DO THIS ONCE ***
 ================================================================================
 
-6.1. Open your web browser (Chrome, Firefox, Edge, etc.)
+  This step trains the disease prediction model on your machine.
+  You only need to do this ONCE. After that, the model is saved locally.
 
-6.2. Navigate to one of these URLs:
-   
-   http://localhost:8000
-   
-   OR
-   
-   http://127.0.0.1:8000
+5.1  Run the training script:
 
-6.3. You should see the HealthHero login/registration page
+     python train_model.py
 
-6.4. If the page doesn't load:
-   - Check that the server is still running in the terminal
-   - Try refreshing the page (F5)
-   - Check your firewall settings
-   - Try a different browser
+5.2  What happens during training:
+
+     [1/5] Downloads the disease-symptom dataset (or uses built-in if offline)
+     [2/5] Loads and preprocesses the data
+     [3/5] Trains a RandomForest classifier (200 trees)
+     [4/5] Evaluates accuracy on test data
+     [5/5] Saves model artifacts to the model/ folder
+
+5.3  Expected output:
+
+     ==================================================
+       HealthHero — Model Training
+     ==================================================
+     [1/5] Attempting dataset download ...
+     [2/5] Loading & preprocessing data ...
+           Training samples : 2400+
+           Diseases (classes): 25
+           Symptoms (features): 60
+     [3/5] Training model ...
+           Training RandomForest (200 trees) ...
+           ✓ Training complete.
+     [4/5] Evaluating model ...
+           Test Accuracy : 95%+
+           Macro F1-Score : 0.95+
+     [5/5] Saving model artifacts ...
+           ✓ Artifacts saved to ./model/
+     ==================================================
+       ✅ Done! Model accuracy: 95%+
+     ==================================================
+
+5.4  After training, verify the model/ folder was created:
+
+     dir model\                  (Windows CMD)
+     ls model/                   (PowerShell)
+
+  You should see:
+     model.pkl       Trained RandomForest classifier
+     encoder.pkl     Label encoder for disease names
+     symptoms.pkl    List of 60 symptom features
+     diseases.pkl    List of all 25 disease names
+
+  NOTE: If training fails due to no internet, it will automatically use the
+  built-in dataset. The model will still train successfully.
 
 ================================================================================
-STEP 7: FIRST TIME SETUP
+STEP 6: START THE SERVER
 ================================================================================
 
-7.1. Create an Account:
-   - Click on "Register" tab
-   - Enter a username
-   - Enter your email address
-   - Enter a password
-   - Click "Register"
+6.1  Make sure you are in the HealthHero directory:
 
-7.2. You'll be automatically logged in after registration
+     cd A:\HealthHero
 
-7.3. Start Using HealthHero:
-   - Chat with the AI health coach
-   - Track your health metrics
-   - Set reminders
-   - Create goals
-   - View analytics and reports
+6.2  Make sure virtual environment is activated:
+     You should see (venv) in your terminal.
+
+6.3  Start the server:
+
+     uvicorn app:app --reload
+
+     OR:
+
+     python -m uvicorn app:app --reload
+
+6.4  Expected output:
+
+     ✓ Local model loaded — 25 diseases, 60 symptoms
+     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+     INFO:     Started reloader process
+     INFO:     Application startup complete.
+
+  IMPORTANT: Make sure you see "✓ Local model loaded" — this confirms the
+  trained model was found and is ready.
+
+6.5  If you see "⚠ Model artifacts not found":
+     - Stop the server (CTRL+C)
+     - Run: python train_model.py
+     - Then start the server again
 
 ================================================================================
-STEP 8: STOPPING THE SERVER
+STEP 7: ACCESS THE APPLICATION
 ================================================================================
 
-8.1. To stop the server:
-   - Go back to the terminal/command prompt where the server is running
-   - Press: CTRL + C
-   - The server will stop gracefully
+7.1  Open your browser (Chrome, Firefox, Edge)
 
-8.2. To start again:
-   - Simply run the command from Step 5.3 again
+7.2  Go to:
+
+     http://localhost:8000
+
+     OR
+
+     http://127.0.0.1:8000
+
+7.3  You should see the HealthHero login/register page.
+
+7.4  If the page doesn't load:
+     - Check the terminal — make sure the server is still running
+     - Refresh the page (F5)
+     - Try a different browser
+     - Check Windows Firewall isn't blocking port 8000
+
+================================================================================
+STEP 8: FIRST TIME SETUP
+================================================================================
+
+8.1  Register an Account:
+     - Click the "Register" tab
+     - Enter a username, email, and password
+     - Click "Register"
+     - You will be logged in automatically
+
+8.2  Start Chatting:
+     - Type your symptoms in the chat box
+     - Examples:
+         "I have fever, chills and joint pain"
+         "I've been having headaches and nausea for 2 days"
+         "I feel fatigue and have a skin rash"
+     - HealthHero will predict possible conditions and give you guidance
+
+8.3  Track Health Metrics:
+     - Log daily water intake, steps, sleep, exercise, weight, heart rate
+
+8.4  Set Reminders:
+     - Create reminders for medications, water, meals, exercise
+
+8.5  View Analytics:
+     - Check your health trends and statistics in the dashboard
+
+================================================================================
+STEP 9: STOP THE SERVER
+================================================================================
+
+9.1  Go to the terminal where the server is running
+9.2  Press CTRL + C
+9.3  The server will stop gracefully
+
+9.4  To restart, simply run:
+     uvicorn app:app --reload
+
+================================================================================
+QUICK START (SUMMARY)
+================================================================================
+
+  First time setup — run these in order:
+
+     cd A:\HealthHero
+     python -m venv venv
+     venv\Scripts\activate
+     pip install -r requirements.txt
+     python train_model.py
+     uvicorn app:app --reload
+
+  Open http://localhost:8000 in your browser.
+
+  Every time after that — just run:
+
+     cd A:\HealthHero
+     venv\Scripts\activate
+     uvicorn app:app --reload
 
 ================================================================================
 TROUBLESHOOTING
 ================================================================================
 
 PROBLEM: "python is not recognized"
-SOLUTION: 
-   - Python is not in your PATH
-   - Reinstall Python and check "Add Python to PATH"
-   - Or use full path: C:\Python3X\python.exe
-
-PROBLEM: "pip is not recognized"
 SOLUTION:
-   - Install pip: python -m ensurepip --upgrade
-   - Or use: python -m pip instead of just pip
+  - Python is not in your PATH
+  - Reinstall Python and check "Add Python to PATH"
+  - Or try: py --version  (Windows launcher)
 
-PROBLEM: "ModuleNotFoundError" when starting server
+PROBLEM: "ModuleNotFoundError: No module named 'sklearn'"
 SOLUTION:
-   - Make sure you installed requirements: pip install -r requirements.txt
-   - Make sure virtual environment is activated (if using one)
-   - Try: pip install --upgrade -r requirements.txt
+  - Run: pip install scikit-learn
+  - Or reinstall all: pip install -r requirements.txt
+
+PROBLEM: "ModuleNotFoundError: No module named 'joblib'"
+SOLUTION:
+  - Run: pip install joblib
+
+PROBLEM: "⚠ Model artifacts not found in ./model/"
+SOLUTION:
+  - You haven't trained the model yet
+  - Run: python train_model.py
+  - Then restart the server
 
 PROBLEM: "Port 8000 is already in use"
 SOLUTION:
-   - Use a different port: python -m uvicorn app:app --reload --port 8001
-   - Or find and close the process using port 8000:
-     Windows: netstat -ano | findstr :8000
-     Then: taskkill /PID <process_id> /F
+  - Use a different port:
+    uvicorn app:app --reload --port 8001
+  - Or find and kill the process:
+    Windows CMD: netstat -ano | findstr :8000
+    Then:        taskkill /PID <process_id> /F
 
-PROBLEM: "Database error" or "table doesn't exist"
+PROBLEM: Training script fails with download error
 SOLUTION:
-   - Delete the file: healthhero.db (if it exists)
-   - Restart the server - it will create a fresh database
+  - The script will automatically fall back to the built-in dataset
+  - Training will still complete successfully without internet
 
-PROBLEM: "Connection refused" in browser
+PROBLEM: "venv\Scripts\Activate.ps1 cannot be loaded"
 SOLUTION:
-   - Make sure server is running (check terminal)
-   - Try http://127.0.0.1:8000 instead of localhost
-   - Check Windows Firewall settings
-   - Make sure you're using the correct port number
+  Run this in PowerShell:
+  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+  Then activate again.
 
-PROBLEM: API key not working
+PROBLEM: pip install fails
 SOLUTION:
-   - Verify the key is correct (starts with "sk-")
-   - Check if you have credits in your OpenAI account
-   - The app will use mock responses if API key is invalid
-   - Try setting it again using Step 4.2
+  - Upgrade pip first:  python -m pip install --upgrade pip
+  - Then retry:         pip install -r requirements.txt
 
-PROBLEM: Changes not reflecting
+PROBLEM: Browser shows "Connection refused"
 SOLUTION:
-   - The --reload flag should auto-reload on changes
-   - If not, stop server (CTRL+C) and restart
-   - Clear browser cache (CTRL+SHIFT+DELETE)
+  - Make sure the server is running (check terminal)
+  - Try http://127.0.0.1:8000 instead of localhost
+  - Check Windows Firewall settings
+
+PROBLEM: Model gives wrong predictions
+SOLUTION:
+  - Use medical symptom keywords: fever, chills, nausea, fatigue, joint pain, etc.
+  - Be specific — the more symptoms you mention, the better the prediction
+  - Run: python llm.py  to test the model with sample inputs
 
 ================================================================================
-QUICK START (FOR EXPERIENCED USERS)
+TESTING THE ML MODEL STANDALONE
 ================================================================================
 
-1. cd A:\HealthHero
-2. python -m venv venv
-3. venv\Scripts\activate
-4. pip install -r requirements.txt
-5. python -m uvicorn app:app --reload
-6. Open http://localhost:8000 in browser
+  You can test the ML model independently without starting the full server:
 
-================================================================================
-FEATURES OVERVIEW
-================================================================================
+     python llm.py
 
-✓ User Authentication (Register/Login)
-✓ AI-Powered Health Chat (OpenAI integration)
-✓ Health Metrics Tracking (Water, Steps, Sleep, Exercise, Weight, Heart Rate)
-✓ Reminders System
-✓ Goal Setting & Progress Tracking
-✓ Analytics Dashboard with Charts
-✓ Health Reports (Weekly/Monthly)
-✓ Profile Management
-✓ Settings & Preferences
+  This runs 5 sample test cases and prints predictions, useful for verifying
+  the model is working correctly after training.
 
 ================================================================================
 FILE STRUCTURE
 ================================================================================
 
-HealthHero/
-├── app.py                 # Main FastAPI application
-├── auth.py                # Authentication & JWT handling
-├── database.py            # Database functions
-├── llm.py                 # AI/LLM integration
-├── requirements.txt       # Python dependencies
-├── healthhero.db          # SQLite database (created automatically)
-├── jwt_secret.txt         # JWT secret key (created automatically)
-├── HealthHero API Key.txt # Optional: Your OpenAI API key
-├── static/
-│   ├── app.js            # Frontend JavaScript
-│   └── styles.css        # Styling
-└── templates/
-    └── index.html        # Main HTML template
+  HealthHero/
+  ├── app.py              FastAPI application — routes and WebSocket
+  ├── auth.py             JWT authentication — login and register
+  ├── database.py         SQLite schema and queries
+  ├── llm.py              ML inference engine — symptom extraction + response
+  ├── train_model.py      One-time training script
+  ├── requirements.txt    Python dependencies
+  ├── START_GUIDE.txt     This file
+  ├── README.md           Project documentation
+  ├── static/
+  │   ├── app.js          Frontend JavaScript
+  │   └── styles.css      Styling
+  ├── templates/
+  │   └── index.html      Main HTML template
+  └── model/              Auto-generated after training
+      ├── model.pkl        Trained RandomForest classifier
+      ├── encoder.pkl      Label encoder for disease names
+      ├── symptoms.pkl     Symptom feature list
+      └── diseases.pkl     Disease class names
 
 ================================================================================
-DEVELOPMENT MODE
+WHAT'S NEW IN THIS VERSION
 ================================================================================
 
-The server runs with --reload flag, which means:
-- Code changes automatically restart the server
-- Great for development
-- No need to manually restart after editing files
-
-For production, remove --reload:
-python -m uvicorn app:app --host 0.0.0.0 --port 8000
-
-================================================================================
-SUPPORT & HELP
-================================================================================
-
-- Check the Help section in the app (click ? icon in sidebar)
-- Review the README.md file
-- Check console/terminal for error messages
-- Verify all files are in the correct locations
+  ✅ Fully offline — no API key or internet needed after setup
+  ✅ Local RandomForest ML model — trained on 25 diseases and 60 symptoms
+  ✅ Instant responses — model inference takes under 10ms
+  ✅ Red flag detection — emergency symptoms always trigger an alert
+  ✅ Structured responses — condition prediction with confidence scores
+  ✅ Removed all OpenAI dependencies
 
 ================================================================================
 END OF GUIDE
 ================================================================================
 
-Happy health tracking with HealthHero! 🏥💚
+  Happy health tracking with HealthHero! 🏥
 
+================================================================================
